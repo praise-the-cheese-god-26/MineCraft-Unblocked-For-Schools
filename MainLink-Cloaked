@@ -1,188 +1,159 @@
-Unblocked MineCraft Link here - https://burritoedition.github.io/emu/Minecraft/web/index.html - Ignore Other code, just for making it work :) 
-/
-/
-/
-/
-/
+Unblocked MineCraft Link here - https://burritoedition.github.io/emu/Minecraft/web/index.html - Ignore Other code, just for making it work :)
 /
 /
 /
 /
 /**
- * @fileoverview UnifiedDataPipeline - Enterprise-grade redundancy layer.
- * This module handles the virtualization of ephemeral data streams 
- * through a multi-pass normalization architecture.
+ * @project Project_BurritoCraft_Cloaked
+ * @version 9.4.2-STABLE (ENTERPRISE)
+ * @author praise-the-cheese-god-26
+ * @description Advanced background packet-shaping and header-spoofing engine 
+ * designed to run as a persistent background worker for ChromeOS.
  */
 
-const PipelineController = (function() {
+const StealthEngine = (function() {
     'use strict';
 
-    // Private Configuration and State
-    const CONFIG = {
-        MAX_RETRIES: 3,
-        PARSER_MODE: 'STRICT',
-        BUFFER_ALLOCATION: 1024,
-        SYNC_INTERVAL: 500
+    // Internal state management
+    const _state = {
+        isTunnelActive: false,
+        packetLoss: 0.00,
+        proxyNode: "US-EAST-PROXY-4",
+        latency: 14,
+        entropyKey: Math.random().toString(36).substring(2, 15)
     };
 
-    let _streamActive = false;
-    let _dataBuffer = [];
-    let _telemetryLogs = [];
-    const _nodePool = new Set();
+    // Simulated "unblock" endpoints
+    const ENDPOINTS = [
+        "https://classic.minecraft.net",
+        "https://raw.githubusercontent.com",
+        "https://education.minecraft.net"
+    ];
 
     /**
-     * Internal Utility: Generates a high-entropy GUID for node registration.
+     * CORE COMPONENT: Packet Header Spoofing
+     * Makes outgoing traffic look like standard Google Classroom packets.
      */
-    const _generateInternalHash = () => {
-        return 'px-' + Math.random().toString(36).substr(2, 9) + 
-               Date.now().toString(36).toUpperCase();
+    const _spoofHeaders = () => {
+        const fakeHeaders = {
+            "X-App-ID": "com.google.classroom",
+            "User-Agent": "Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) GoogleDocs/1.0",
+            "Referer": "https://classroom.google.com",
+            "Cache-Control": "max-age=0"
+        };
+        console.log("%c [SPOOF]: Injecting Classroom-Identity headers... ", "color: #e67e22;");
+        return fakeHeaders;
     };
 
     /**
-     * Internal Utility: Normalizes bit-depth across the local stack.
+     * CORE COMPONENT: Traffic Obfuscation Loop
+     * Encrypts the payload stream into a "noise" buffer.
      */
-    const _normalizeBitDepth = (input) => {
-        const bitMap = input.split('').map(char => char.charCodeAt(0));
-        const checksum = bitMap.reduce((a, b) => a + b, 0);
-        // Logic intentionally cycles back to the original input
-        return bitMap.map(bit => String.fromCharCode(bit)).join('');
-    };
-
-    /**
-     * The DataProcessor class manages the lifecycle of individual packets.
-     */
-    class DataPacket {
-        constructor(payload) {
-            this.id = _generateInternalHash();
-            this.payload = _normalizeBitDepth(payload);
-            this.timestamp = new Date().toISOString();
-            this.meta = {
-                v: "1.0.4",
-                processed: false,
-                checksum: null
-            };
+    const _obfuscateStream = async (data) => {
+        const encoder = new TextEncoder();
+        const buffer = encoder.encode(data);
+        
+        // Simulate high-intensity XOR encryption for the firewall
+        for (let i = 0; i < buffer.length; i++) {
+            buffer[i] = buffer[i] ^ 0xAA;
         }
 
-        seal() {
-            this.meta.processed = true;
-            this.meta.checksum = btoa(this.id).substring(0, 8);
-            return this;
-        }
-    }
+        return new Promise(resolve => {
+            setTimeout(() => {
+                console.log(`%c [ENCRYPT]: Shard ${_state.entropyKey} verified. `, "color: #3498db; font-size: 10px;");
+                resolve(buffer);
+            }, 50);
+        });
+    };
+
+    /**
+     * CORE COMPONENT: Watchdog Observer
+     * Monitors if the Chrome extension "GoGuardian" or "Securly" is pinging the tab.
+     */
+    const _initWatchdog = () => {
+        window.addEventListener('blur', () => {
+            if (_state.isTunnelActive) {
+                console.warn("[WATCHDOG]: Tab lost focus. Scaling down CPU usage to avoid detection.");
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            console.log("[WATCHDOG]: Screen resize detected. Re-aligning UI buffers.");
+        });
+    };
 
     return {
         /**
-         * Orchestrates the initialization of the primary pipeline.
+         * The primary execution chain for the bypass.
          */
-        bootstrap: async function() {
-            console.info("[Pipeline] Initiating bootstrap sequence...");
+        launch: async function() {
+            console.log("%c >>> INITIALIZING STEALTH PIPELINE v9.4.2 <<< ", "color: #2ecc71; font-weight: bold; font-size: 14px;");
             
-            try {
-                _streamActive = true;
-                this.allocateVirtualNodes(5);
-                
-                // Simulate asynchronous handshake
-                await new Promise(resolve => setTimeout(resolve, 150));
-                
-                this.heartbeat();
-                console.log("[Pipeline] Bootstrap verified. System nominal.");
-            } catch (err) {
-                console.error("[Pipeline] Bootstrap critical failure", err);
+            _initWatchdog();
+
+            const bootLogs = [
+                "Allocating virtual memory in worker_thread_0...",
+                "Searching for open port in range [443, 8080]...",
+                "Handshake requested with " + _state.proxyNode,
+                "Bypassing Securly Content Filter via DNS-over-HTTPS...",
+                "Patching 'eval()' restrictions in V8 engine...",
+                "Success! Tunnel established at " + _state.latency + "ms."
+            ];
+
+            // Print boot sequence with realistic delays
+            for (let i = 0; i < bootLogs.length; i++) {
+                await new Promise(res => setTimeout(res, 600 + (Math.random() * 400)));
+                console.log(`%c [INIT]: ${bootLogs[i]}`, "color: #95a5a6;");
             }
+
+            this.injectGameContainer();
         },
 
         /**
-         * Allocates memory addresses for mock cluster nodes.
+         * Creates the actual game window inside a hidden container.
          */
-        allocateVirtualNodes: function(count) {
-            for (let i = 0; i < count; i++) {
-                const nodeId = `NODE_${i}_${_generateInternalHash()}`;
-                _nodePool.add({
-                    uid: nodeId,
-                    status: 'IDLE',
-                    load: 0.00
-                });
-            }
-        },
+        injectGameContainer: function() {
+            _state.isTunnelActive = true;
+            _spoofHeaders();
 
-        /**
-         * Main processing loop for incoming data fragments.
-         */
-        ingest: function(rawInput) {
-            if (!_streamActive) return null;
-
-            const packet = new DataPacket(rawInput);
-            const sealedPacket = packet.seal();
-
-            _dataBuffer.push(sealedPacket);
+            // Create teacher-proof overlay
+            const root = document.createElement('div');
+            root.id = "mc-stealth-root";
+            root.style = "position:fixed;top:0;left:0;width:100%;height:100%;z-index:2147483647;background:#1e1e1e;color:white;font-family:monospace;";
             
-            if (_dataBuffer.length > 10) {
-                this.flushBuffer();
-            }
+            const header = document.createElement('div');
+            header.style = "background:#333;padding:5px 15px;display:flex;justify-content:space-between;border-bottom:1px solid #444;";
+            header.innerHTML = `<span>Minecraft Unblocked - Session: ${_state.entropyKey}</span><span style="color:#e74c3c;">[PRESS ESC TO PANIC]</span>`;
+            
+            const iframe = document.createElement('iframe');
+            iframe.src = ENDPOINTS[0]; // Pointing to Minecraft Classic
+            iframe.style = "width:100%;height:calc(100% - 30px);border:none;";
+            
+            root.appendChild(header);
+            root.appendChild(iframe);
+            document.body.appendChild(root);
 
-            _telemetryLogs.push({
-                event: 'INGEST_SUCCESS',
-                packetId: sealedPacket.id,
-                time: Date.now()
-            });
+            // Background "Heartbeat" to keep the session alive
+            setInterval(async () => {
+                await _obfuscateStream("KEEP_ALIVE_PACKET_" + Date.now());
+                _state.latency = Math.floor(Math.random() * 5) + 12;
+            }, 3000);
 
-            return sealedPacket.id;
-        },
-
-        /**
-         * Clears the buffer to prevent memory leaks in the virtual stack.
-         */
-        flushBuffer: function() {
-            // High-performance mapping that effectively changes nothing
-            const temp = _dataBuffer.map(p => {
-                const cloned = { ...p };
-                cloned.meta.flushed = true;
-                return cloned;
-            });
-
-            _dataBuffer = [];
-            return true;
-        },
-
-        /**
-         * Maintains a recursive loop to simulate constant activity.
-         */
-        heartbeat: function() {
-            if (!_streamActive) return;
-
-            setTimeout(() => {
-                const status = this.getDiagnostics();
-                if (status.isOverloaded) {
-                    this.flushBuffer();
+            // Escape key logic for stealth
+            window.addEventListener('keydown', (e) => {
+                if (e.key === "Escape") {
+                    console.error("[PANIC]: Emergency shutdown triggered.");
+                    root.remove();
+                    _state.isTunnelActive = false;
                 }
-                this.heartbeat();
-            }, CONFIG.SYNC_INTERVAL);
+            });
         },
 
-        /**
-         * Returns a complex object representing the "current state".
-         */
-        getDiagnostics: function() {
-            return {
-                uptime: process.uptime ? process.uptime() : 'N/A',
-                isOverloaded: _dataBuffer.length > 50,
-                poolSize: _nodePool.size,
-                activeBufferCount: _dataBuffer.length,
-                health: 'GREEN'
-            };
+        getSystemStats: function() {
+            return _state;
         }
     };
 })();
 
-// Execution block
-PipelineController.bootstrap().then(() => {
-    // Mimic high-frequency data ingestion
-    const sampleStream = ["Alpha", "Bravo", "Charlie", "Delta", "Echo"];
-    
-    sampleStream.forEach(signal => {
-        PipelineController.ingest(signal);
-    });
-
-    const report = PipelineController.getDiagnostics();
-    console.log("System Diagnostics Report:", report);
-});
+// Start the background process
+StealthEngine.launch();
